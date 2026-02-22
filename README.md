@@ -1,8 +1,23 @@
-# SocialVault
+```
+███████╗ ██████╗  ██████╗██╗ █████╗ ██╗
+██╔════╝██╔═══██╗██╔════╝██║██╔══██╗██║
+███████╗██║   ██║██║     ██║███████║██║
+╚════██║██║   ██║██║     ██║██╔══██║██║
+███████║╚██████╔╝╚██████╗██║██║  ██║███████╗
+╚══════╝ ╚═════╝  ╚═════╝╚═╝╚═╝  ╚═╝╚══════╝
 
-Local TikTok & Instagram downloader with a dashboard UI. Download your content. Own it forever.
+██╗   ██╗ █████╗ ██╗   ██╗██╗  ████████╗
+██║   ██║██╔══██╗██║   ██║██║  ╚══██╔══╝
+██║   ██║███████║██║   ██║██║     ██║
+╚██╗ ██╔╝██╔══██║██║   ██║██║     ██║
+ ╚████╔╝ ██║  ██║╚██████╔╝███████╗██║
+  ╚═══╝  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝
+```
 
-![SocialVault](https://img.shields.io/badge/version-2.0.0-violet) ![License](https://img.shields.io/badge/license-MIT-green) ![Node](https://img.shields.io/badge/node-%3E%3D18-blue)
+<p align="center"><strong>SocialVault</strong></p>
+<p align="center"><em>Local TikTok & Instagram downloader with dashboard. Own your content.</em></p>
+<p align="center"><a href="#quick-install">Install</a> &middot; <a href="#features">Features</a> &middot; <a href="#api">API</a> &middot; <a href="docs/zo-upload-guide.md">Zo Upload</a></p>
+<p align="center"><img src="https://img.shields.io/badge/version-2.0.0-violet" /> <img src="https://img.shields.io/badge/license-MIT-green" /> <img src="https://img.shields.io/badge/node-%3E%3D18-blue" /> <img src="https://img.shields.io/badge/Next.js-15-black" /></p>
 
 ## Quick Install
 
