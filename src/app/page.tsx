@@ -6,6 +6,7 @@ import DownloadForm from '@/components/DownloadForm';
 import JobList from '@/components/JobList';
 import ResultView, { type ResultData } from '@/components/ResultView';
 import DependencyCheck from '@/components/DependencyCheck';
+import About from '@/components/About';
 import { ToastProvider, useToast } from '@/components/Toast';
 
 type Platform = 'tiktok' | 'instagram';
@@ -173,6 +174,7 @@ export default function Home() {
     <ToastProvider>
       <DependencyCheck />
       <DashboardContent />
+      <About />
     </ToastProvider>
   );
 }
