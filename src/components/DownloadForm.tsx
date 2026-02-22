@@ -18,8 +18,8 @@ function detectPlatform(url: string): Platform | null {
 }
 
 const PLATFORMS: { key: Platform; label: string; icon: string }[] = [
-  { key: 'tiktok', label: 'TikTok', icon: '♪' },
-  { key: 'instagram', label: 'Instagram', icon: '◎' },
+  { key: 'tiktok', label: 'TikTok', icon: '\u266A' },
+  { key: 'instagram', label: 'Instagram', icon: '\u25CE' },
 ];
 
 export default function DownloadForm({ onSubmit, loading, error }: DownloadFormProps) {
@@ -71,13 +71,13 @@ export default function DownloadForm({ onSubmit, loading, error }: DownloadFormP
       className="sv-card animate-fade-in"
       style={{
         padding: 24,
-        borderColor: isDragging ? '#7c3aed' : undefined,
-        boxShadow: isDragging ? '0 0 0 3px rgba(124, 58, 237, 0.15)' : undefined,
+        borderColor: isDragging ? '#dc2743' : undefined,
+        boxShadow: isDragging ? '0 0 0 3px rgba(220, 39, 67, 0.15)' : undefined,
       }}
     >
       {/* URL Input */}
       <div style={{ marginBottom: 20 }}>
-        <label className="mb-1.5 block text-sm font-medium" style={{ color: '#a1a1aa' }}>
+        <label className="mb-1.5 block text-sm font-medium" style={{ color: '#888' }}>
           URL or username
         </label>
         <div className="relative">
@@ -96,12 +96,12 @@ export default function DownloadForm({ onSubmit, loading, error }: DownloadFormP
             </span>
           )}
         </div>
-        {isDragging && <p className="mt-1 text-sm" style={{ color: '#a78bfa' }}>Drop URL here</p>}
+        {isDragging && <p className="mt-1 text-sm" style={{ color: '#dc2743' }}>Drop URL here</p>}
       </div>
 
       {/* Platform */}
       <div style={{ marginBottom: 20 }}>
-        <label className="mb-1.5 block text-sm font-medium" style={{ color: '#a1a1aa' }}>
+        <label className="mb-1.5 block text-sm font-medium" style={{ color: '#888' }}>
           Platform
         </label>
         <div className="grid grid-cols-2 gap-2">
@@ -120,7 +120,7 @@ export default function DownloadForm({ onSubmit, loading, error }: DownloadFormP
 
       {/* Mode */}
       <div style={{ marginBottom: 20 }}>
-        <label className="mb-1.5 block text-sm font-medium" style={{ color: '#a1a1aa' }}>
+        <label className="mb-1.5 block text-sm font-medium" style={{ color: '#888' }}>
           Mode
         </label>
         <div className="grid grid-cols-2 gap-2">
@@ -143,7 +143,7 @@ export default function DownloadForm({ onSubmit, loading, error }: DownloadFormP
           style={{
             marginBottom: 20,
             padding: '12px 16px',
-            borderRadius: 12,
+            borderRadius: 8,
             border: '1px solid rgba(239, 68, 68, 0.3)',
             backgroundColor: 'rgba(239, 68, 68, 0.08)',
             color: '#f87171',
@@ -159,7 +159,7 @@ export default function DownloadForm({ onSubmit, loading, error }: DownloadFormP
         {loading ? 'Creating job...' : 'Download'}
       </button>
 
-      <p className="mt-4 text-center text-xs" style={{ color: '#555560' }}>
+      <p className="mt-4 text-center text-xs" style={{ color: '#444' }}>
         Files save to ~/Downloads/socialvault/
       </p>
     </form>

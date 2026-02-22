@@ -129,9 +129,10 @@ function DashboardContent() {
     }
   }, []);
 
+  // Full-width when gallery is showing, normal width otherwise
   if (selectedJob) {
     return (
-      <div className="mx-auto px-6 py-8" style={{ maxWidth: 1280 }}>
+      <div style={{ width: '100%' }}>
         <ResultView
           job={selectedJob}
           onBack={() => setSelectedJob(null)}
@@ -152,10 +153,10 @@ function DashboardContent() {
         {view === 'download' ? (
           <div className="mx-auto max-w-md">
             <div className="mb-6 text-center">
-              <h2 className="text-2xl font-bold" style={{ color: '#e4e4e7' }}>
+              <h2 className="text-2xl font-bold" style={{ color: '#fff' }}>
                 Download your content
               </h2>
-              <p className="mt-1 text-sm" style={{ color: '#71717a' }}>
+              <p className="mt-1 text-sm" style={{ color: '#666' }}>
                 TikTok & Instagram. Local files. Your data.
               </p>
             </div>
