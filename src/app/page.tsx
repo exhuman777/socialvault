@@ -130,7 +130,7 @@ function DashboardContent() {
 
   if (selectedJob) {
     return (
-      <div className="mx-auto max-w-3xl px-6 py-8">
+      <div className="mx-auto px-6 py-8" style={{ maxWidth: 1280 }}>
         <ResultView
           job={selectedJob}
           onBack={() => setSelectedJob(null)}
