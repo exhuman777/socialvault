@@ -1,21 +1,28 @@
-// Simple concurrency guard — max simultaneous downloads
-let activeDownloads = 0;
+// Use globalThis so state is shared across Next.js module contexts
+const g = globalThis as typeof globalThis & {
+  __sv_active_downloads?: number;
+};
+
 const MAX_CONCURRENT = 2;
 
+function getActive(): number {
+  return g.__sv_active_downloads ?? 0;
+}
+
 export function canStartDownload(): boolean {
-  return activeDownloads < MAX_CONCURRENT;
+  return getActive() < MAX_CONCURRENT;
 }
 
 export function acquireSlot(): boolean {
-  if (activeDownloads >= MAX_CONCURRENT) return false;
-  activeDownloads++;
+  if (getActive() >= MAX_CONCURRENT) return false;
+  g.__sv_active_downloads = getActive() + 1;
   return true;
 }
 
 export function releaseSlot(): void {
-  activeDownloads = Math.max(0, activeDownloads - 1);
+  g.__sv_active_downloads = Math.max(0, getActive() - 1);
 }
 
 export function getActiveCount(): number {
-  return activeDownloads;
+  return getActive();
 }

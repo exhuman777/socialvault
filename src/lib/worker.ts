@@ -2,39 +2,39 @@ import { getNextJob, setJobStatus, setJobProgress, setJobResult, setJobError } f
 import { downloadContent } from './downloader';
 import { acquireSlot, releaseSlot } from './ratelimit';
 
-let running = false;
-let pollTimeout: ReturnType<typeof setTimeout> | null = null;
+// Use globalThis so state is shared across Next.js module contexts
+// (instrumentation.ts and API routes compile into separate bundles)
+const g = globalThis as typeof globalThis & {
+  __sv_worker_running?: boolean;
+  __sv_poll_timeout?: ReturnType<typeof setTimeout>;
+};
 
 export function startWorker(): void {
-  if (running) return;
-  running = true;
+  if (g.__sv_worker_running) return;
+  g.__sv_worker_running = true;
   console.log('[SocialVault] Worker started — polling for jobs');
   schedulePoll();
 }
 
 export function stopWorker(): void {
-  running = false;
-  if (pollTimeout) {
-    clearTimeout(pollTimeout);
-    pollTimeout = null;
+  g.__sv_worker_running = false;
+  if (g.__sv_poll_timeout) {
+    clearTimeout(g.__sv_poll_timeout);
+    g.__sv_poll_timeout = undefined;
   }
   console.log('[SocialVault] Worker stopped');
 }
 
-/**
- * Schedule the next poll. Uses setTimeout chain (not setInterval)
- * so the next poll only fires AFTER the current job finishes.
- */
 function schedulePoll(): void {
-  if (!running) return;
-  pollTimeout = setTimeout(async () => {
+  if (!g.__sv_worker_running) return;
+  g.__sv_poll_timeout = setTimeout(async () => {
     await processNextJob();
-    schedulePoll(); // Chain: poll again after job completes (or immediately if no job)
+    schedulePoll();
   }, 1000);
 }
 
 async function processNextJob(): Promise<void> {
-  if (!acquireSlot()) return; // All slots busy
+  if (!acquireSlot()) return;
 
   const job = getNextJob();
   if (!job) {
@@ -69,5 +69,5 @@ async function processNextJob(): Promise<void> {
 }
 
 export function isWorkerRunning(): boolean {
-  return running;
+  return !!g.__sv_worker_running;
 }
