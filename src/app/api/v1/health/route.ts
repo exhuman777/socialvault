@@ -3,12 +3,17 @@ import { getStats } from '@/lib/jobs';
 import { checkDependencies } from '@/lib/downloader';
 import { isWorkerRunning } from '@/lib/worker';
 import { getActiveCount } from '@/lib/ratelimit';
+import { existsSync } from 'fs';
+import { join } from 'path';
+import { homedir } from 'os';
 
 const startTime = Date.now();
+const COOKIE_FILE = join(homedir(), 'Downloads', 'socialvault', '.cookies.txt');
 
 export async function GET() {
   const deps = await checkDependencies();
   const stats = getStats();
+  const hasCookies = existsSync(COOKIE_FILE);
 
   const platforms: Record<Platform, PlatformHealth> = {
     tiktok: {
@@ -16,7 +21,8 @@ export async function GET() {
       last_checked: new Date().toISOString(),
     },
     instagram: {
-      status: deps['gallery-dl'] && deps['yt-dlp'] ? 'operational' : 'down',
+      // Instagram needs gallery-dl. Without cookies it's degraded (public only).
+      status: !deps['gallery-dl'] ? 'down' : hasCookies ? 'operational' : 'degraded',
       last_checked: new Date().toISOString(),
     },
   };
@@ -26,12 +32,14 @@ export async function GET() {
 
   const response = createResponse({
     status: allOperational ? 'healthy' : anyDown ? 'unhealthy' : 'degraded',
-    version: '2.0.0',
+    version: '2.1.0',
     uptime_seconds: Math.floor((Date.now() - startTime) / 1000),
     worker_running: isWorkerRunning(),
     active_downloads: getActiveCount(),
     platforms,
     dependencies: deps,
+    cookies: hasCookies ? 'found' : 'missing',
+    cookie_path: COOKIE_FILE,
     jobs: stats,
   });
 

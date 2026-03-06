@@ -10,11 +10,15 @@ import {
 import { getDownloadPath } from './storage';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSync } from 'fs';
 import { join, extname, basename } from 'path';
+import { homedir } from 'os';
 
 const execFileAsync = promisify(execFile);
 
 // Kill process after this many ms
 const PROCESS_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+
+// Cookie file path (users can place cookies.txt here)
+const COOKIE_FILE = join(homedir(), 'Downloads', 'socialvault', '.cookies.txt');
 
 interface DownloadCallbacks {
   onProgress?: (completed: number, total: number, currentItem: string) => void;
@@ -123,6 +127,11 @@ async function downloadTikTok(
     '--no-overwrites',
   ];
 
+  // Add cookie file if it exists
+  if (existsSync(COOKIE_FILE)) {
+    args.push('--cookies', COOKIE_FILE);
+  }
+
   if (request.mode === 'profile') {
     if (request.limit) {
       args.push('--playlist-end', String(request.limit));
@@ -139,37 +148,43 @@ async function downloadInstagram(
   downloadDir: string,
   callbacks?: DownloadCallbacks
 ): Promise<void> {
-  if (request.mode === 'profile') {
-    // gallery-dl for full profiles
-    // -o directory=[] flattens output (no instagram/username/ subdirs)
-    const args = [
-      '--dest', downloadDir,
-      '-o', 'directory=[]',
-      '--no-mtime',
-      '--write-metadata',
-    ];
+  // gallery-dl for ALL Instagram downloads (yt-dlp Instagram extractor is unreliable)
+  const args = [
+    '--dest', downloadDir,
+    '-o', 'directory=[]',
+    '--no-mtime',
+    '--write-metadata',
+  ];
 
-    if (request.limit) {
-      args.push('--range', `1-${request.limit}`);
-    }
+  // Add cookie file if it exists (Instagram requires auth for most content)
+  if (existsSync(COOKIE_FILE)) {
+    args.push('--cookies', COOKIE_FILE);
+  }
 
-    args.push(request.target);
-    console.log(`[SocialVault] gallery-dl args:`, args.join(' '));
+  if (request.mode === 'profile' && request.limit) {
+    args.push('--range', `1-${request.limit}`);
+  }
 
+  args.push(request.target);
+  console.log(`[SocialVault] gallery-dl args:`, args.join(' '));
+
+  try {
     await runProcess('gallery-dl', args, callbacks);
-  } else {
-    // Single post via yt-dlp
-    const args = [
-      '--no-warnings',
-      '--no-check-certificates',
-      '-o', join(downloadDir, '%(id)s.%(ext)s'),
-      '--write-info-json',
-      '--no-overwrites',
-      request.target,
-    ];
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
 
-    console.log(`[SocialVault] yt-dlp args:`, args.join(' '));
-    await runYtDlp(args, callbacks);
+    // Provide actionable error messages for common Instagram failures
+    if (message.includes('Unable to extract') || message.includes('404') || message.includes('login')) {
+      const hasCookies = existsSync(COOKIE_FILE);
+      const hint = hasCookies
+        ? 'Instagram cookies may be expired. Re-export cookies from your browser.'
+        : `Instagram requires authentication. Export cookies from your browser to: ${COOKIE_FILE}`;
+      throw new Error(`Instagram download failed. ${hint}`);
+    }
+    if (message.includes('429') || message.includes('rate')) {
+      throw new Error('Instagram rate limit hit. Wait a few minutes and try again.');
+    }
+    throw err;
   }
 }
 

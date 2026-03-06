@@ -17,7 +17,7 @@
 <p align="center"><strong>SocialVault</strong></p>
 <p align="center"><em>Local TikTok & Instagram downloader with dashboard. Own your content.</em></p>
 <p align="center"><a href="#quick-install">Install</a> &middot; <a href="#features">Features</a> &middot; <a href="#network-access">Network</a> &middot; <a href="#api">API</a> &middot; <a href="docs/zo-upload-guide.md">Zo Upload</a></p>
-<p align="center"><img src="https://img.shields.io/badge/version-2.0.0-violet" /> <img src="https://img.shields.io/badge/license-MIT-green" /> <img src="https://img.shields.io/badge/node-%3E%3D18-blue" /> <img src="https://img.shields.io/badge/Next.js-15-black" /></p>
+<p align="center"><img src="https://img.shields.io/badge/version-2.1.0-violet" /> <img src="https://img.shields.io/badge/license-MIT-green" /> <img src="https://img.shields.io/badge/node-%3E%3D18-blue" /> <img src="https://img.shields.io/badge/Next.js-15-black" /></p>
 
 ## Quick Install
 
@@ -56,6 +56,17 @@ For development: `npm run dev` (hot reload, same network access).
 | **ffmpeg** | `brew install ffmpeg` | Optional |
 
 SocialVault checks for these on startup and shows install instructions if anything is missing.
+
+### Instagram Authentication (Important)
+
+Instagram requires authentication for downloading content. Without cookies, most downloads will fail with "Unable to extract data".
+
+1. Install a browser extension like "Get cookies.txt" or "cookies.txt" for Chrome/Firefox
+2. Log into Instagram in your browser
+3. Export cookies for `instagram.com` to a file
+4. Save it as `~/Downloads/socialvault/.cookies.txt`
+
+SocialVault will automatically detect and use this cookie file. The dashboard shows a notice if cookies are missing.
 
 ### Platform-specific
 
@@ -140,6 +151,7 @@ Click a completed download in History to open the gallery:
 │           ├── {post_id}.jpg.json
 │           ├── {reel_id}.mp4
 │           └── _metadata.json
+├── .cookies.txt              # Optional: browser cookies for Instagram auth
 └── .socialvault/
     └── jobs.json
 ```
@@ -185,8 +197,8 @@ curl http://localhost:3777/api/v1/download?job_id=sv_xxx
 
 - **Next.js 15** -- React framework with App Router
 - **Tailwind CSS v4** -- Styling
-- **yt-dlp** -- TikTok & Instagram video downloads
-- **gallery-dl** -- Instagram profile downloads
+- **yt-dlp** -- TikTok video downloads
+- **gallery-dl** -- Instagram downloads (all modes)
 - **TypeScript** -- Type safety
 
 ## Authors
